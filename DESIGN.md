@@ -1,0 +1,115 @@
+# Soulmask — Consistent Progression Mod
+
+**Target game:** Soulmask (CampFire Studio / Qooland Games), Unreal Engine 4.27, including the Shifting Sands DLC.
+
+This mod reshapes Soulmask's tribesman economy so advancement is predictable and earned over time rather than discovered by re-rolling captures.
+It keeps the game's structure while removing randomness from proficiency caps, recruit starting skill, and talent tiers.
+Quality remains the one meaningful recruitment filter, and the number of tribesmen a player may hold grows gradually across the whole game.
+
+## Goals
+
+- Remove the grind of capturing many tribesmen to find a good stat roll.
+- Make progression consistent and smooth, with randomness only where it is the point of play.
+- Keep early recruits worth investing in and make deeper, rarer recruits worth pursuing.
+- Reward deliberate roster choices and investment over luck.
+- Leave the core game intact.
+
+## Proficiency caps
+
+Every recruit's proficiency cap is `global base + class bonus`.
+The global base is a fixed constant and each class contributes an exact per-skill bonus, so every recruit of a class shares identical caps.
+Class skills cap at 125 and skills outside the class set cap at 85.
+A skill that is absent from a class's set receives no class bonus and resolves to the non-class cap.
+Caps are independent of level, quality, rarity, rank, and region, so no capture roll can change them.
+The per-archetype cap overrides on the `DT_CustomizeNPC` rows are cleared so no archetype seed can alter a cap.
+
+Each class has a defined skill set:
+
+| Class | Skills |
+| --- | --- |
+| Hunter | Spear, Blade, Shield, Bow, Harvest, Logging |
+| Guard | Spear, Blade, Shield, Bow, Great Sword, Mining |
+| Warrior | Spear, Blade, Shield, Bow, Dual-Blade, Gauntlets, Great Sword, Hammer, Whip |
+| Laborer | Spear, Shield, Logging, Mining, Harvest, Plant |
+| Porter | Gauntlets, Weaving, Potting, Wood & Stone, Leatherworking, Kiln |
+| Craftsman | Gauntlets, Craftsman, Alchemy, Cooking, Weapon Crafting, Armor Crafting |
+
+## Recruit starting proficiency
+
+Starting proficiency is deterministic and keyed to the recruit's level, so a newly recruited tribesman begins at a predictable point.
+Non-class skills follow a shared curve from 1 at level 1 to 76 at level 50.
+Class skills add a fixed 36 on top, starting at 37 and reaching 112.
+Both end near 90% of their cap, leaving a small amount of training headroom.
+
+## Weapon mastery
+
+Each weapon has mastery thresholds at proficiency 30, 60, 90, and 120.
+Every threshold a recruit's cap can reach always grants an unlock, and the ability is chosen randomly from that threshold's pool.
+An ability the recruit already knows is never granted again.
+Class weapons, capped at 125, reach all four thresholds; weapons outside the class set, capped at 85, reach the first two.
+Because each pool holds more abilities than the weapon has slots, the full set becomes visible across recruits over time.
+
+## Talent composition
+
+Every recruit is assembled from the same slots, so its build is readable at a glance.
+A recruit receives one Origin talent, one Battle-Tested talent, one tribal talent, one class talent, and a few preference talents.
+
+- **Origin.** One class-identity talent, fixed at the top tier, whose growth target list matches the class skill set.
+- **Battle-Tested III.** The Experience talent that reduces damage taken by the recruit while deployed as a companion, granted to every class at a uniform tier.
+- **Tribal.** One talent drawn from a small set specific to the recruit's tribe, independent of class.
+- **Class.** One talent drawn from a small set specific to the recruit's class.
+- **Preferences.** A few permanent, gameplay-neutral flavor talents, split into likes and aversions that affect mood only. There are no stat, combat, or production penalties and no negative talents that clear with leveling.
+
+Quality sets the tier of the class talent:
+
+| Quality | Class-talent tier |
+| --- | --- |
+| red | III |
+| yellow | II |
+| purple | I |
+| white, green, blue | none |
+
+The Origin talent is granted to every class:
+
+| Class | Origin talent | Family | Star-III row |
+| --- | --- | --- | --- |
+| Laborer | Origin - Laborer | `50001` | `500013` |
+| Porter | Origin - Porter | `50002` | `500023` |
+| Craftsman | Origin - Craftsman | `50003` | `500033` |
+| Warrior | Origin - Fighting | `50004` | `500043` |
+| Hunter | Origin - Hunting | `50005` | `500053` |
+| Guard | Origin - Guard | `50006` | `500063` |
+
+The in-game description shown on each Origin talent must also be rewritten to match the class's new skill set, because the shipped text still names the original skills.
+
+The tribal talent is drawn from a small set per tribe:
+
+| Tribe | Talents |
+| --- | --- |
+| Claw | Getting Braver, Fatal Rhythm |
+| Flint | Refined Armor, Weapon Enhancement |
+| Fang | Planting Pro, Logging Pro, Vein Protection |
+| Outcast | Cold Resist, Radiation Resist, Heat Resist |
+
+The class talent is drawn from a small set per class:
+
+| Class | Talents |
+| --- | --- |
+| Hunter | Marksman Footstep, Rapid Fire, Bone-gnawing Wound |
+| Guard | Rock-like Resolve, Endurance, Shield Bash |
+| Warrior | Onslaught, Powerful Attack, Fatal |
+| Laborer | Camel Cow, Trick Force, Loaded Raid |
+| Porter | Accelerate Kiln, Accelerate Leatherworking, Accelerate Potting, Accelerate Weaving, Accelerate Wood & Stone |
+| Craftsman | Refined Tool, Accelerate Alchemy, Accelerate Armor Crafting, Accelerate Cooking, Accelerate Weapon Crafting |
+
+## Quality and rarity
+
+Quality stays random in order to make the set of "good recruits" smaller than the set of "all enemies".
+It sets the class-talent tier and the recruit's starting gear.
+It does not affect caps or starting proficiency.
+
+## Tribesman cap growth
+
+The number of tribesmen a player may hold grows gradually with awareness strength instead of jumping at a few milestones.
+The personal cap begins at a native base of 3 and gains a 15-step ladder from the mask Connection Enhancement module, one step every four awareness levels, each step adding 3, ending at 48.
+This keeps new slots arriving throughout the game, so there is a continuing reason to recruit later in the game since you cannot fill every slot early.

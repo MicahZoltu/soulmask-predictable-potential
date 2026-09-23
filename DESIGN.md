@@ -48,6 +48,7 @@ Every threshold a recruit's cap can reach always grants an unlock, and the abili
 An ability the recruit already knows is never granted again.
 Class weapons, capped at 125, reach all four thresholds; weapons outside the class set, capped at 85, reach the first two.
 Because each pool holds more abilities than the weapon has slots, the full set becomes visible across recruits over time.
+The mod makes the 30/60/90/120 thresholds always grant, but the proficiency-0 masteries inherited from a recruit's random starting loadout remain random and cannot be easily overridden by a pak; the generation-time mechanism and the data-only mitigations are in [docs/game-reference/weapon-mastery.md](docs/game-reference/weapon-mastery.md) ("The proficiency-0 starting mastery row"), with the native detail in [docs/reverse-engineering/native-binary-analysis.md](docs/reverse-engineering/native-binary-analysis.md) (section 9.3).
 
 ## Talent composition
 

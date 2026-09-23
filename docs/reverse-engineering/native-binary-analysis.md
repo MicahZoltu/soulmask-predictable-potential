@@ -690,6 +690,45 @@ The distinction that matters for editing is whether a value is read from the cla
 The cap constants are stored as object fields and can be changed by overriding the `BP_ProficiencyConfig` CDO with a pak.
 The clamp constant at `0x6c9770` and the constructor immediates are compiled `.rodata`/`.text`; changing them requires a binary patch.
 
+### 9.3 Weapon mastery selection and the generation-time starting mastery
+
+The mastery selector `UHZiYuanGuanLiQi::GetZhuanJingAbilityByShuLianDu` at `0x4453ac0` is the threshold roll: it sums `PinZhiGaiLv[quality]` with `SLDGaiLv[threshold].GaiLv` and draws from `JiNengChi`, excluding abilities already in the character mastery array at `character+0x33f8` (count `+0x3400`, stride `0xc`). (High)
+Its thresholds are the multiples of `30`; `DT_ZhuanJingSLD.SLDGaiLv` is keyed `30/60/90/120`, there is no key `0`, and no caller requests threshold `0`. (High)
+
+Two mastery-record level markers separate the two rows the UI shows. (High)
+The **Inherent Comprehension** apply `0x480da60` appends each index of the manager default object's `ZhuanJingAbilitySets` (`TArray<int32>`, the per-weapon `*99` catalogue abilities) with level `0xffffffff`. (High)
+The **proficiency-0 starting mastery** generation appends with level `0`. (High)
+
+| Symbol / role | Address | Note |
+| --- | --- | --- |
+| Inherent Comprehension apply | `0x480da60` | appends each `ZhuanJingAbilitySets` index at level `0xffffffff` |
+| starting-mastery generation | `0x48790e0` | reads the spawner `WuQiAndJiNeng` map for each generated starting weapon |
+| character-generation caller | `0x4872d70` | calls `0x48790e0` at `0x4873a52` and `0x4874068` |
+| archetype mastery copy | `0x480d7c0` | copies `CustomizeZhuanJing` with no `ProfLv` filter |
+| mastery threshold selector | `0x4453ac0` | `GetZhuanJingAbilityByShuLianDu` |
+
+| Field / key | Location | Meaning |
+| --- | --- | --- |
+| `ZhuanJingAbilitySets` | `BP_ZiYuanGuanLiQi.Default__BP_ZiYuanGuanLiQi_C` | `TArray<int32>` of the per-weapon `*99` catalogue abilities; the manager CDO is a `RawExport`, so UAssetAPI cannot typed-edit it |
+| `HShuaGuaiQiData.WuQiAndJiNeng` | spawner data `+0x2d0` / `+0x2d8` | weapon type byte → `ZJJNIndexArray` |
+| `ZJJNIndexArray` | `WuQiAndJiNeng` value | candidate starting-mastery indices for one weapon |
+| `CustomizeZhuanJing` | `DT_CustomizeNPC` row, struct `CustomizeZJGA` | `{WeaponType, ProfLv, GANo}` mastery grants |
+| character mastery array | `character+0x33f8` | records, count at `+0x3400`, stride `0xc` |
+| mastery record level | record field | `0` = proficiency-0 starting grant; `0xffffffff` = Inherent Comprehension |
+
+The starting-mastery path reads the spawner's `WuQiAndJiNeng` map for each generated starting weapon, copies that weapon's `ZJJNIndexArray`, filters indices the character already owns, draws one index with the RNG, and appends a level-0 record. (High)
+One level-0 row is produced per starting weapon, so the row is a random draw over the random starting loadout and cannot be driven from `DT_ZhuanJingSLD`. (High)
+The archetype copy `0x480d7c0` applies every `CustomizeZhuanJing` entry regardless of `ProfLv`, so `ProfLv = 0` entries seed level-0 masteries; the copy is reached only for characters carrying a `CustomizeRowName`, and only when the character has no mastery records yet (`character+0x3400 <= 0`). (High on the copy and the guard; the covered-spawn fraction is Inference)
+
+The shipped-game view of the two rows, the starting pools, and the data-only mitigations for the 0 row are in [`../game-reference/weapon-mastery.md`](../game-reference/weapon-mastery.md) "The proficiency-0 starting mastery row".
+
+```sh
+objdump -d --start-address=0x4453ac0 --stop-address=0x4454300 "$BIN"   # threshold selector
+objdump -d --start-address=0x480d7c0 --stop-address=0x480da60 "$BIN"   # archetype mastery copy
+objdump -d --start-address=0x48790e0 --stop-address=0x4879200 "$BIN"   # starting-mastery generation
+objdump -d --start-address=0x4872d70 --stop-address=0x4874100 "$BIN"   # generation caller
+```
+
 ## 10. Foot-guns
 
 **Addresses shift every game build patch.**

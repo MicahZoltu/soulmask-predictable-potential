@@ -88,6 +88,7 @@ The in-game acceptance checklist is at the repository root: [`../final-mod-verif
 - **UAssetAPI dependency.** `build/DEPENDENCIES.md` records the build-only tools (Bun 1.3.9, `repak` 0.2.3, .NET 8, `UAssetAPI` 1.1.0) with role, rationale, alternatives, closure and license, and pinned version; the mod itself has no runtime dependency and `build/package.json` declares none.
 - **Typecheck gate.** There is no `tsconfig.json` and no typecheck gate, so `bun test` exercises runtime behaviour but never type-checks and a type error can pass the suite.
 - **Per-asset edit modules.** The per-asset edit modules are not unit-tested directly; the shared class-skill reshape and the pure helpers are covered, and the integration build's apply/verify pair is the only guard for the remaining modules, so a wrong constant shared by both apply and verify would go unnoticed.
+- **Proficiency-0 starting masteries stay random.** The mod makes the 30/60/90/120 thresholds always grant, but the proficiency-0 masteries per starting weapon remain random and cannot be easily overridden by a pak; the data-only mitigations are partial and a universal fix is native-only. The mechanism is in [`game-reference/weapon-mastery.md`](game-reference/weapon-mastery.md) "The proficiency-0 starting mastery row" and [`reverse-engineering/native-binary-analysis.md`](reverse-engineering/native-binary-analysis.md) section 9.3.
 
 Open decisions and unknowns:
 

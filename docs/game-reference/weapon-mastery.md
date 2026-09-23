@@ -137,7 +137,7 @@ The shipped entries below are exact index → weight pairs.
 | `Bian` | 90 | `901:20, 902:20, 903:20, 904:20, 905:20, 906:20, 907:20, 908:10` |
 | `Bian` | 120 | `901:20, 902:20, 903:20, 904:20, 905:20, 906:20, 907:20, 908:20` |
 
-Two weights depart from the uniform `20`: the Bow index `397` carries weight `10` at threshold `90`, and the Whip capstone `908` is present at threshold `30` with weight `0`, so it cannot be selected there. (Asset-level verified)
+Two anomalies beyond the standard capstone ramp: the Bow non-capstone index `397` carries weight `10` at threshold `90` rather than its `20` at `30`/`60`/`120`, so Bow/90 lists two weight-`10` entries, the capstone `303` on its standard ramp and `397`; and the Whip capstone `908` is present at threshold `30` with weight `0`, so it cannot be selected there, whereas every other weapon's capstone is absent from its level-30 pool. (Asset-level verified)
 
 ### 2.5 DT_GuDingZhuanJing
 
@@ -185,8 +185,8 @@ A threshold can only be wasted if every entry in its pool is already owned, in w
 Whether every failed band is revisited by a later `UpgradeProficiency` call was not conclusively traced; setting `GaiLv = 1.0` makes the first attempt succeed and removes the dependency on retry.
 
 **Chance-composition caveat:** the disassembly sums the quality float and the threshold `GaiLv`. (Disassembly-verified)
-With every shipped value at `0.5` that sum is `1.0`, which under an additive reading would make every shipped roll succeed. (Unverified)
-The exact native struct offsets behind `PinZhiGaiLv` versus `SLDGaiLv` were inferred from the map layouts rather than annotated, so the combination rule (additive, multiplicative, or independent rolls) is unconfirmed. (Unverified)
+With every shipped value at `0.5` that sum is `1.0`, so under the verified additive composition every shipped roll succeeds. (Disassembly-verified)
+The exact native struct offsets behind `PinZhiGaiLv` versus `SLDGaiLv` were inferred from the map layouts rather than annotated, so the addition is disassembly-verified while the identity of the two summed floats remains inferred. (Disassembly-verified for the addition; the addend identity inferred)
 
 ## 4. Starting ability and the per-threshold draw
 
@@ -197,9 +197,56 @@ Whether the blank body also runs the random `SLDGaiLv` path in addition to its f
 Each threshold's `JiNengChi` is the candidate pool for a weighted-random draw; the integer values are relative selection weights, not probabilities. (Asset-level verified)
 The shipped weights are uniformly `20` for the common abilities and ramp `5 → 10 → 20` at thresholds `60 → 90 → 120` for the golden capstone.
 Because the pool is a multi-entry map, the granted ability stays random among the candidates the character does not already own.
-Initial mastery can also be seeded by spawn data (`WuQiAndJiNeng` on `BP_SGQ_*`/`BP_BuLuo_Base`) and by an archetype row's `CustomizeZhuanJing` (weapon type, target proficiency level, and GA id). (Asset-level verified)
+Initial mastery can also be seeded by spawn data (`WuQiAndJiNeng` on `BP_SGQ_*`/`BP_BuLuo_Base`) and by an archetype row's `CustomizeZhuanJing` (weapon type, target proficiency level, and GA id); this is the proficiency-0 row detailed in section 5. (Asset-level verified)
 
-## 5. Edit recipe: making unlocks reliable
+## 5. The proficiency-0 starting mastery row
+
+The mastery UI shows two unrelated things, and conflating them makes the 0 row look editable when it is not. (Disassembly-verified)
+
+**Inherent Comprehension** (`先天领悟`) is a separate UI line that every character carries from generation, is identical on every character, and is always granted.
+Its data is the manager default object `BP_ZiYuanGuanLiQi.Default__BP_ZiYuanGuanLiQi_C.ZhuanJingAbilitySets`, a serialized `TArray<int32>` holding the per-weapon `*99` catalogue abilities `{199, 299, 399, 499, 599, 699, 799, 899, 999}`. (Asset-level verified)
+The native apply `0x480da60` appends each index to the character's mastery array at `character+0x33f8` with level `0xffffffff`, which is the row the UI labels Inherent Comprehension. (Disassembly-verified)
+The manager class default object is a `RawExport`, so UAssetAPI cannot typed-edit its `ZhuanJingAbilitySets`; the row works as shipped and is not the subject of the limitation below. (Asset-level verified)
+
+The **proficiency slot** row displays a `0/30/60/90/120` row. (Disassembly-verified)
+The 30/60/90/120 slots are the `DT_ZhuanJingSLD` threshold rolls described in section 3; the shipped thresholds are fixed at multiples of 30, `SLDGaiLv` is keyed exactly `30/60/90/120`, there is no key `0`, and no caller of the selector requests threshold `0`. (Disassembly-verified)
+`DT_ZhuanJingSLD` therefore cannot control the 0 row, and setting `SLDGaiLv` — including adding a `0` key — cannot make the 0 row deterministic or universal. (Disassembly-verified)
+
+The 0 row is a **generation-time starting-mastery grant**, not a threshold roll. (Disassembly-verified)
+The native function `0x48790e0`, called from the character-generation function `0x4872d70` at call sites `0x4873a52` and `0x4874068`, reads the spawner-data `HShuaGuaiQiData.WuQiAndJiNeng` map at offset `0x2d0`/`0x2d8`, keyed by each generated starting weapon's type byte. (Disassembly-verified)
+For each starting weapon it copies that weapon's `ZJJNIndexArray`, filters out indices the character already owns, draws one index with an RNG, and appends a mastery record at level `0`. (Disassembly-verified)
+A character therefore gets exactly one proficiency-0 row per starting weapon, the granted ability is a random draw from that weapon's starting pool, and the row exists only for the weapons in the random starting loadout. (Disassembly-verified)
+
+Starting weapons come from `BP_SGQ_BuLuo_Base.PinZhiAndWuQiQz`, which selects a quality-weighted count of 2–4 weapons per NPC from the per-region `DT_DiWeiWuQi_<camp>` tables. (Asset-level verified)
+The base spawner's `WuQiAndJiNeng` map holds 8 weapon keys (no Whip); the Shifting Sands (Egypt) spawner holds Whip only. (Asset-level verified)
+The starting pools, read from `WuQiAndJiNeng.ZJJNIndexArray`, are: (Asset-level verified)
+
+| Weapon | Starting `ZJJNIndexArray` |
+| --- | --- |
+| Blade (`Dao`) | `101–105` |
+| Spear (`Mao`) | `201–205` |
+| Bow (`Gong`) | `301, 302, 304, 305` |
+| Hammer (`Chui`) | `401–405` |
+| Shield (`DunPai`) | `501, 503–507` |
+| Gauntlets (`QuanTao`) | `601–605, 607, 608` |
+| Dual Blades (`ShuangDao`) | `701–706` |
+| Greatsword (`DaJian`) | `801–805` |
+| Whip (`Bian`) | no base entry |
+
+The 0 row cannot be easily overridden by a pak: the grant is native, and its only data inputs are the per-weapon, per-region starting pools rather than a single table. (Disassembly-verified)
+The recovered addresses and record layouts behind these claims are in [../reverse-engineering/native-binary-analysis.md](../reverse-engineering/native-binary-analysis.md) section 9.3.
+
+### 5.1 Data-only mitigations and their limits
+
+- Collapsing each weapon's `WuQiAndJiNeng.ZJJNIndexArray` to a single index makes the proficiency-0 ability deterministic for whatever weapons a character starts with, but does not add rows for weapons the character did not start with. (Asset-level verified for the edit shape)
+- Adding `ProfLv = 0` entries to `DT_CustomizeNPC.CustomizeZhuanJing` (struct `CustomizeZJGA`, fields `{WeaponType, ProfLv, GANo}`) seeds proficiency-0 masteries **without weapons**, because the native copy `0x480d7c0` applies no `ProfLv` filter. (Disassembly-verified)
+  It applies only to characters that carry a `CustomizeRowName` — Outcast recruits and invasion forces in the base game and the Egypt DLC, a small fraction of world spawns — and wild or camp spawners such as `BP_SuiJi_BuLuo` have no archetype; the exact coverage fraction is not measured. (Inferred)
+  It also applies only when the character has no mastery records yet (`character+0x3400 <= 0`), so ordering against other generation grants is unconfirmed. (Disassembly-verified for the condition; ordering inferred)
+- The broad alternative, giving every NPC every weapon type, requires editing `PinZhiAndWuQiQz` plus roughly 75 per-region `DT_DiWeiWuQi_*` tables, caps at 8 weapons (no base Whip), and floods NPCs with gear, with loot, equipment, AI, and replication side effects. (Inferred)
+
+A universal, clean fix for the 0 row is native-only.
+
+## 6. Edit recipe: making unlocks reliable
 
 This section is a mod edit recipe, not shipped behavior; the generic DataTable edit mechanics (row/value edits, map edits, and repacking) are in [../modding-guide/data-editing.md](../modding-guide/data-editing.md). (Asset-level verified for the edit shape; mechanism in-game unverified)
 
@@ -211,7 +258,7 @@ For every one of the nine weapon rows:
 2. For each of the four `SLDGaiLv` thresholds set `GaiLv` to `1.0`.
 3. Leave `JiNengChi` as the shipped multi-entry pool. (Asset-level verified for the edit shape; in-game unverified)
 
-Setting both `GaiLv` and `PinZhiGaiLv` to `1.0` guarantees success under an additive, multiplicative, or independent-roll interpretation, which makes the unconfirmed combination rule irrelevant.
+Setting both `GaiLv` and `PinZhiGaiLv` to `1.0` guarantees success regardless of the exact composition, so the additive detail does not matter.
 Leaving `JiNengChi` multi-entry keeps the unlock random among un-owned abilities.
 No Blueprint or native work is required; the whole input is data, and the selector's other details are bypassed by the `1.0` chances.
 
@@ -220,7 +267,7 @@ Optional variants: (Asset-level verified as data edits)
 - To guarantee the capstone, set only threshold `120`'s `JiNengChi` to the single capstone index (`106/206/303/406/508/606/707/806/908`), leaving 30/60/90 as multi-entry random pools.
 - To guard against pool exhaustion, remove from each threshold's pool the indices guaranteed to be owned earlier (the `DT_GuDingZhuanJing` fixed picks at 30/60/90); each remaining entry is then un-owned and the grant is guaranteed regardless of the native filter.
 
-## 6. Threshold reachability at design caps
+## 7. Threshold reachability at design caps
 
 The cap figures in this section are mod design targets, not shipped caps. (Inferred)
 Mastery thresholds are fixed at `30/60/90/120`, and a threshold grants its unlock only when proficiency reaches it; the selection path excludes abilities already owned. (Asset-level verified for the thresholds; reachability follows from the caps.)
@@ -237,7 +284,7 @@ The settled non-class cap is 85 per [../../DESIGN.md](../../DESIGN.md); any non-
 A Training Ground cap-raise can lift a non-class weapon above its cap toward a mentor's cap (up to the class `125`), which re-opens `90/120`; see [training-ground-and-transfer.md](training-ground-and-transfer.md).
 The weapon-proficiency cap composition itself is covered in [proficiencies-and-caps.md](proficiencies-and-caps.md).
 
-## 7. Console commands
+## 8. Console commands
 
 The command names are literal `Exec` strings in the shipping server binary. (Asset-level verified)
 
@@ -250,12 +297,13 @@ The command names are literal `Exec` strings in the shipping server binary. (Ass
 The argument spaces are high confidence; the exact reflection signature (parameter order and property types) was not recovered statically.
 Proficiency-side commands (`SLDDengJi`, `SLDDengJiAll`, `SLDJingYan`, `SetShuLianDuMaxVal`) move the proficiency value that reaches the thresholds; they are listed in [console-commands.md](console-commands.md).
 
-## 8. Foot-guns
+## 9. Foot-guns
 
-- **Chance composition is not fully understood.** The selector sums `PinZhiGaiLv` and `GaiLv`, so the shipped `0.5 + 0.5 = 1.0` under an additive reading would always succeed, while the combination rule is unconfirmed. Set both to `1.0` rather than reasoning about which one gates.
+- **Chance composition is additive.** The selector sums `PinZhiGaiLv` and `GaiLv` (disassembly-verified), so the shipped `0.5 + 0.5 = 1.0` always succeeds; set both to `1.0` so a lowered value on either side still cannot gate.
 - **Duplicate handling is native and already correct.** The owned-array filter prevents a repeated grant and stops a threshold being spent on an already-held ability, so overlapping pools across thresholds are harmless. Do not delete pool entries to avoid repeats.
 - **"Reliable unlock" is not "fixed ability".** Setting the chances to `1.0` makes the grant reliable but keeps it random. Collapsing `JiNengChi` to a single entry makes the ability deterministic; use that only when a fixed sequence is actually wanted.
 - **Native-only versus data-editable boundary.** All three mastery assets are DataTables and are fully editable. The `GaiLv` roll, the weighted `JiNengChi` draw, and the owned-ability exclusion are native C++ in `WSServer-Linux-Shipping`; the `1.0` edit makes those details irrelevant to the outcome rather than editing them.
 - **No mastery edit has been observed in game.** The selector is disassembled, the edits re-parse, and the mechanism is asset-level verified, but no mastery pak was built and no unlock was observed on a running server; the reliable-unlock behaviour is in-game unverified.
 - **Whip is a data exception.** Index `908` is present in the level-30 pool at weight `0`; a collapse that assumed the capstone is absent at 30 would mis-handle Whip.
 - **The fixed blank-body picks and the archetype seed are separate.** `DT_GuDingZhuanJing` is already deterministic; initial mastery can also arrive through spawn data (`WuQiAndJiNeng`) and archetype rows (`CustomizeZhuanJing`), so an unlock that looks wrong may come from a starting grant rather than the threshold selector.
+- **The 0 row is native, not a threshold.** The proficiency-0 row is a generation-time random draw over each starting weapon's `ZJJNIndexArray` (section 5); no `DT_ZhuanJingSLD` edit, including a `SLDGaiLv` key `0`, reaches it, and a pak can only make it deterministic for the weapons a character already starts with.

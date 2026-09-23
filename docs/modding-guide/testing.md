@@ -93,7 +93,10 @@ Train a fresh recruit's class weapon and watch the mastery track at each thresho
 
 Open the mask Connection Enhancement module and read each tier's tooltip.
 The roster total is composed by native `AHPlayerState` state rather than stored per character, so on an existing save it may need one awareness-level gain or a session restart before it recomputes.
-The `GameXishu` keys `GeRenMaxZhaoMuCount`, `GeRenMaxZhaoMuCount_Two`, and `GeRenMaxZhaoMuCount_Three` are plaintext disk config and cannot ship in the pak; the pak-side lever is `AwarenessLevel_*.ZhaoMuMaxCount`.
+The pak-side lever is the shared mask node `BP_Mask_XiuFu01_1012`, which stores the ramp keys and gates, plus each mode's coefficient manager: the game selects the manager per mode through `BP_CustomGameModeManager.GameXiShuGuanLiQiClassMap`, so Survival reads `BP_GameXiShu_GuanLiQi` (`+3`/tier, total `48`) and Tribe Mode reads `BP_GameXiShu_GuanLiQi_Management` (`+6`/tier, total `93`).
+Both totals are min-bounded by the world tribe cap (`GongHuiMaxZhaoMuCount` plus guild `TribeMemCount`), so read them only where that cap allows; [`../game-reference/roster-limits.md`](../game-reference/roster-limits.md) records the per-mode and per-group values.
+The same tooltip therefore reads a different total per mode, so run the check in both a Survival world and a Tribe Mode world.
+The disk `GeRenMaxZhaoMuCount`, `GeRenMaxZhaoMuCount_Two`, and `GeRenMaxZhaoMuCount_Three` keys are the shipped lever that the rebuilt node no longer references, and the `AwarenessLevel_*.ZhaoMuMaxCount` column is inert.
 
 ### Quality and tier
 
@@ -122,7 +125,7 @@ These are the reasons a correct mod can appear not to work, and the reasons a st
 - Every cap and class-talent check is per class.
   A Craftsman and a Warrior of the same level and quality do not share a class skill set, so reading one tells you nothing about the other.
 - Record the level and quality (the potential-icon border colour) before opening any panel, because both change what the expected value is.
-- The DLC Shifting Sands map seeds archetypes from `DT_CustomizeNPC_Egypt` rather than `DT_CustomizeNPC`, so a cap or talent check there must confirm the DLC table is the one being read; the delivered pak clears both tables and the DLC origin-gift gap is tracked in [`../mod-status.md`](../mod-status.md).
+- The DLC Shifting Sands map seeds archetypes from `DT_CustomizeNPC_Egypt` rather than `DT_CustomizeNPC`, so a cap or talent check there must confirm the DLC table is the one being read; the delivered pak clears both tables' cap and gift maps and titles, and the DLC in-game check is tracked in [`../mod-status.md`](../mod-status.md).
 - The cap is fixed at recruitment, so one recruit is one draw; collect several recruits of the same class to distinguish a real override from a lucky roll.
 - A class default object is deserialized when the class loads, and paks mount before game classes load, so the override must be installed before launch; there is no runtime re-read on a later mount.
 - Defect removal has no stored per-character copy and is read at the 5-level bands, so it applies to an existing below-60 tribesman; the cap and starting value do not.

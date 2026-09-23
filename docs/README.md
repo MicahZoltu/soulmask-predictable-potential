@@ -39,7 +39,7 @@ When two documents disagree, prefer the claim with the strongest evidence and tr
 | [`talents.md`](game-reference/talents.md) | The natural-gift (talent) effect table, selection pools, assignment pipeline, and its class, tribe, origin, preference, and defect subsystems. | Mod makers changing talents. |
 | [`weapon-mastery.md`](game-reference/weapon-mastery.md) | Weapon mastery abilities, their unlock thresholds, and the DataTables that grant them. | Mod makers editing mastery. |
 | [`tribes-and-regions.md`](game-reference/tribes-and-regions.md) | Hostile factions, per-tribe identity traits, biome variants, and region tiers. | Mod makers working with tribes and regions. |
-| [`roster-limits.md`](game-reference/roster-limits.md) | Every tribesman count-limit setting, the effective personal cap, and the mask-node ramp technique. | Mod makers changing roster size. |
+| [`roster-limits.md`](game-reference/roster-limits.md) | Every tribesman count-limit setting, the effective personal cap, and the per-mode mask-node ramp technique. | Mod makers changing roster size. |
 | [`tech-tree.md`](game-reference/tech-tree.md) | The mask technology tree's Blueprint nodes and how they are stored, gated, and unlocked. | Mod makers editing the tech tree. |
 | [`training-ground-and-transfer.md`](game-reference/training-ground-and-transfer.md) | The Training Ground and Mysterious Stone Table systems and what each one actually moves. | Mod makers considering transfer mechanics. |
 | [`console-commands.md`](game-reference/console-commands.md) | The in-game console and admin command surface, with native binary literals and test-recruit recipes. | Mod makers testing in game and server admins. |
@@ -79,7 +79,7 @@ When two documents disagree, prefer the claim with the strongest evidence and tr
 
 The findings come from two sources: the shipping cooked assets in the retail client and dedicated-server paks, and the Linux dedicated-server binary, which has no static symbol table (`.symtab`) but retains a dynamic symbol table (`.dynsym`) as described in [`reverse-engineering/native-binary-analysis.md`](reverse-engineering/native-binary-analysis.md).
 The AES key that decrypts the retail pak indexes is a secret; within this maintained documentation set it appears only in [`reverse-engineering/extracting-cooked-assets.md`](reverse-engineering/extracting-cooked-assets.md), and it must not be copied into other documents or committed around.
-`artifacts/` holds transient probe sources, one directory per probe; these are experiments, not deliverables, and are excluded from version control.
+The transient probe scaffolding used during discovery has been removed; the durable findings and the reproducible methods are captured in this set, and the productionized editing code lives under [`../build/`](../build/).
 
 ## Where to start by task
 

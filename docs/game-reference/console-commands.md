@@ -269,6 +269,8 @@ The `GameXishu` world coefficients it sets are owned by `server-config.md`, whos
 
 All presets share the same 282 `GameXishu` keys.
 The five full families are `Template` (whose `ECustomGameMode` enum is `Survival`), `_Action` (Warrior), `_Creative` (Creative), `_Management` (Tribe), and `_PVP`; the game exposes `ECustomGameMode::{Survival, Creative, Action, Management, PVP}`.
+Each `ECustomGameMode` loads its own coefficient manager through `BP_CustomGameModeManager.GameXiShuGuanLiQiClassMap`: `Survival` uses the base `BP_GameXiShu_GuanLiQi`, `Management` uses `BP_GameXiShu_GuanLiQi_Management`, and `Action`, `Creative`, and `PVP` use their `_Action`, `_Creative`, and `_PVP` siblings.
+Each sibling serializes its own `GameXiShuMap` and `GameXiShuConfigMap`, so a map key present in only one mode's manager is shadowed in the others and `BP_GetGameXiShuBothUse` returns its `1.0` fallback there.
 
 ### Maps
 

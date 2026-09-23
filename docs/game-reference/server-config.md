@@ -521,6 +521,8 @@ Notes on individual focus keys:
 - `MaRenBeiDong/ZhuDong/ErJiShuXingRatio` are the barbarian per-level attribute gains; the `BeiDong` and `ZhuDong` keys clamp at 1 minimum, so they can only increase, not decrease, growth.
 - `CurProfInitRatio` is documented as the initial current-proficiency range for elites/bosses, not for ordinary recruits; it is 0 in every preset except Action.
 - `GeRenMaxZhaoMuCount` (personal) and `GongHuiMaxZhaoMuCount` (guild) are the recruit roster caps; `ManRenChuZhanCount` caps deployed tribesmen.
+- The mod's ramp magnitudes (`ZhaoMuRamp01`-`ZhaoMuRamp15`) are keys on each mode's coefficient manager (`BP_GameXiShu_GuanLiQi` for Survival, `BP_GameXiShu_GuanLiQi_Management` for Tribe Mode), absent from the shipped disk schema; the game picks the manager per `ECustomGameMode` and a key absent from that mode's manager falls back to `1.0`. `UHGameXiShuGuanLiQi::LoadFromJsonFile` applies every key present in the loaded `GameXishu.json` with no schema filter, so once the game writes the ramp keys into that saved file they override the pak. **asset-level verified.**
+- `GongHuiMaxZhaoMuCount` also min-bounds the personal total, so the mod's Tribe Mode `93` target holds only where the world tribe cap allows; group `1` sets `GongHuiMaxZhaoMuCount` to `40`, and [`roster-limits.md`](roster-limits.md) records the per-mode and per-group values.
 - `ChestDropEquipmentMaxQualitySwitch` is a 0/1 toggle that caps chest-dropped equipment quality; it is off in every shipped preset.
 - `WanMeiChongSu` and `ZuRenFuZhi` are the deep-copy and tribesman-duplication toggles.
 
@@ -567,6 +569,9 @@ Precedence, highest first:
 3. `WS/Saved/GameplaySettings/GameXishu[_<Name>].json` group `1` on a dedicated server.
 4. The selected `GameXishu_Template[_<Name>].json` preset, used to seed a missing saved file.
 5. Built-in compiled defaults.
+
+`UHGameXiShuGuanLiQi::LoadFromJsonFile` resolves the gameplay-settings keys: it prefers the world's saved `WS/Saved/GameplaySettings/GameXishu.json` and falls back to `GameXishu_Template[_<coef>].json` when the saved file is absent, then applies every key present in the loaded JSON to `GameXiShuMap`, auto-creating a missing key (`FindOrAdd`) with no schema or whitelist filter, so a key is overridden exactly when it is present in the loaded JSON.
+Each applied value is then clamped into its `GameXiShuConfigUnit`'s `[XiShuMinValue, XiShuMaxValue]` without raising it **asset-level verified**.
 
 ## 7. Mod loading and signatures
 

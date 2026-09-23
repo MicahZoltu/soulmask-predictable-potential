@@ -1,7 +1,7 @@
 # Talents and Natural Gifts
 
 This is the authoritative reference for Soulmask's natural-gift (talent) system as it is shipped.
-It covers the effect table, the selection pools, the assignment pipeline, the counts and counters, and the class, tribe, origin, title, preference, and defect subsystems.
+It covers the effect table, the selection pools, the assignment pipeline, the counts and counters, and the class, tribe, origin, title, archetype-seed, preference, and defect subsystems.
 Confidence tags are used throughout: **asset-level verified** means read directly from a cooked asset or recovered from the shipping binary, **in-game verified** means observed in a running game, **inferred** means reconstructed from structure or indirect evidence, and **unverified** means the evidence is incomplete.
 The mod's chosen talent composition is a design choice documented in [`../../DESIGN.md`](../../DESIGN.md) and [`../mod-status.md`](../mod-status.md); this reference states the shipped behavior it edits.
 
@@ -73,7 +73,7 @@ The census is a mix of selection categories and fixed identity categories; only 
 | `ID` | Int, `0` on every row; the row name is the real id |
 
 `BaseWeight` is uniformly `100`, so it carries no shipped differentiation.
-The talent's display text is resolved from the localization `TextKey`; the inline string in the asset is not authoritative at runtime (see section 15).
+The talent's display text is resolved from the localization `TextKey`; the inline string in the asset is not authoritative at runtime (see section 16).
 Progression-relevant effects are driven by `NGEffect`, `NGEffectVal`, and `NGProfTypeList`; see section 3.
 
 ## 3. Effect enums
@@ -197,6 +197,7 @@ That track is configured on `BP_JianZhuTrainingGround.TraningExpAddMap` with `Up
 The native replicated state is `CurUpgradeNGID` / `CurUpgradeLevel` / `OnRep_CurUpgradeLevel` and the guild log literal is `EGongHuiRiZhi::TrainingUpgradeNG`.
 The `UpgradeNGID` chain links I→II→III and the terminal star-III row has `UpgradeNGID = 0`; 226 learnable families carry the chain.
 Boss pools bypass the star table entirely and always grant star III.
+The born origin and birth-tribe selectors also draw the literal star rows listed in their own `NGIDList` entries and never consult `DT_PinZhiGoodNGStarWeight`, so a per-quality tier for an origin or a tribal talent is not data-possible; its tier is whatever star row the entry names (**asset-level verified**).
 
 The shipped star table has only three magnitude tiers, so a no-grant outcome for the lowest qualities cannot come from a fourth star row; the only data surface for it is zeroing the per-quality gift cadence in `DT_PinZhiGoodNGAddPr`.
 The mod's quality-to-class-talent-tier mapping and its no-grant outcome are design choices covered in [`../../DESIGN.md`](../../DESIGN.md) and [`../mod-status.md`](../mod-status.md).
@@ -257,6 +258,7 @@ Titles are drawn from two CDO pools on `Default__BP_ManRenRandomConfig_C`: `Born
 Both use struct `ChengHaoUnit` (a `ChengHaoClass` plus a `ChengHaoQuanZhong`).
 The grant chance is the quality-keyed `BornGetChengHaoRateMap`, which ships `10/10/15/15/35/35` for quality `0..5` (**asset-level verified** for the map; **inferred** for the list contents and counts).
 The chosen `ChengHaoClass` then grants its `NaturalGiftList` row.
+A title's `NaturalGiftList` can name any `ChengHao`-source `DT_GiftZongBiao` row, not only the prof-growth rows in the table above; for example the common title `BP_CH_PuTong_FTSS` grants row `600015` (Axe Killer) (**asset-level verified**).
 The shipped `ChengHao` families also include `60001`–`60007`, which are not drawn from the `ProfExpInc` title granters; `60005` is Famous Trash (`AttrInc`, Max Morale `-50%`) (**asset-level verified**).
 A title does not consume a `GoodNGMaxNum` slot, because its source byte is `ChengHao` (3).
 
@@ -297,6 +299,7 @@ The magnitudes are the star I/II/III values on the effect row's `NGEffectVal`.
 
 Tribe exclusives are not in the positive pool at all.
 They are assigned at birth from `BP_ManRenRandomConfig.BornBuLuoCiTiaoMap`, which is keyed by `EClanType` and holds a `CiTiaoList` of region-conditioned `NGIDList` families, each weighted 50 per star.
+The tribal selector draws those listed star rows directly and does not consult `DT_PinZhiGoodNGStarWeight`, so each region entry's tier is whatever star row its `NGIDList` names (**asset-level verified**).
 Tribe identity is `EClanType`; there is no identity `DT_Tribe` table (the `DT_Tribe` under `/Game/AdditionMap01` is a DLC drop-bag).
 
 | `EClanType` | Tribe | Base families | Biome / DLC families |
@@ -381,7 +384,14 @@ Personality talents are source `XingGe` (`300xxx`, 18 rows) and are normally abs
 A personality row carries a `ChangTaiXiaoGuo`-family effect with value `+0`, so it contributes no proficiency cap and no growth bonus.
 The six personality candidate families are `30001` Gentle, `30002` Cautious, `30003` Aggressive, `30004` Manic, `30005` Lazy, and `30006` Coward, each contributing three non-learnable `+0` star rows across the 18 `300011`–`300063` rows (**asset-level verified** for the ids and names; the table is not cooked on retail).
 
-## 15. Foot-guns
+## 15. Archetype seeds
+
+A `DT_CustomizeNPC` row, and its Shifting Sands mirror `DT_CustomizeNPC_Egypt`, can seed a fixed natural gift and a fixed title at character generation, independent of the random talent pools.
+`CustomizeNGMap` is a `TMap<int32,NaturalGift>` whose detail entries name `DT_GiftZongBiao` rows directly, and `CustomizeChengHaoClass` names a `BP_CH_*_C` title class whose `NaturalGiftList` grants a `ChengHao`-source row (**asset-level verified**).
+These are literal values rather than pool draws, so an archetype-seeded gift or title appears in addition to anything the random subsystems assign, and clearing `CustomizeNGMap` and nulling `CustomizeChengHaoClass` removes them.
+The per-row field layout and the shipped row contents are catalogued in [recruitment and spawns](recruitment-and-spawns.md) and [proficiencies and caps](proficiencies-and-caps.md).
+
+## 16. Foot-guns
 
 These are the concrete traps that will silently waste an attempt if forgotten.
 

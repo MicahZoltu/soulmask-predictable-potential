@@ -304,7 +304,7 @@ The layout is a 16-byte magic, one version byte (`3`), an `int64` string-table o
 A positive string length means one-byte (ASCII/Latin-1) content and a negative length means UTF-16.
 The file exposes an empty namespace and 40,068 keys and is 3,503,072 bytes.
 
-A self-contained Bun reader/writer (`locres-edit.mjs`, driven by `locres-apply.mjs`) re-serializes the file byte-identically (`cmp` clean) and can replace a key's text while appending a fresh string-table entry so shared entries are not clobbered.
+The productionized Bun reader/writer for this format lives with the build tooling at [`../../build/src/pure/locres.ts`](../../build/src/pure/locres.ts) (see [`../../build/README.md`](../../build/README.md)); it re-serializes the file byte-identically and can replace a key's text while appending a fresh string-table entry so shared entries are not clobbered.
 A 36-entry key-to-text map covering all six origin families' titles and descriptions was applied and re-parsed successfully.
 The retail client file is byte-identical to the extracted server copy (SHA-256 `7d6699e0…`), and a `repak pack --version V11 --mount-point ../../../` override ships the edited file back to the same internal path.
 Locres override priority over the base pak at runtime is unverified.

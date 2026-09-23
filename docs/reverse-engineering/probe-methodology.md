@@ -51,7 +51,7 @@ Read generation-time effects only on a freshly generated recruit, and use a fres
 
 Not every probe target is generation-baked, and the design must know which it is.
 `DT_PinZhiBadNGRemovePr` is read live at each 5-level check and has no stored per-character copy, so its edit applies at the next check for any character up to and including level 60.
-The effective roster cap is not table-driven: `AHPlayerState` seeds its base of `3` from the native constant at `0x6df880` in its constructor, no post-construction writer exists, and the `AwarenessLevel_*` `ZhaoMuMaxCount` column is inert, so no awareness change or session restart makes a table value appear; the base rises only through the mask Connection-Enhancement increments (see [`../game-reference/roster-limits.md`](../game-reference/roster-limits.md)).
+The effective roster cap is not table-driven: `AHPlayerState` seeds its base of `3` from the native constant at `0x6df880` in its constructor, no post-construction writer exists, and the `AwarenessLevel_*` `ZhaoMuMaxCount` column is inert, so no awareness change or session restart makes a table value appear; the base rises only through the mask Connection-Enhancement increments, which resolve per game mode from that mode's coefficient manager (see [`../game-reference/roster-limits.md`](../game-reference/roster-limits.md)).
 A negative result from a generation-baked probe is therefore not necessarily a failed mount; it may be an old character.
 
 ## Worked examples of the method

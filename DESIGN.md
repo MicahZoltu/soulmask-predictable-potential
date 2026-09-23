@@ -56,9 +56,9 @@ A recruit receives one Origin talent, one Battle-Tested talent, one tribal talen
 
 - **Origin.** One class-identity talent, fixed at the top tier, whose growth target list matches the class skill set.
 - **Battle-Tested III.** The Experience talent that reduces damage taken by the recruit while deployed as a companion, granted to every class at a uniform tier.
-- **Tribal.** One talent drawn from a small set specific to the recruit's tribe, independent of class.
+- **Tribal.** One talent fixed at star III, drawn from a small set specific to the recruit's tribe, independent of class. Per-quality tribal tiers are not data-possible: the tribal selector draws literal listed star rows and never consults the quality star table, so every tribe's region entries are pinned to star III.
 - **Class.** One talent drawn from a small set specific to the recruit's class.
-- **Preferences.** A few permanent, gameplay-neutral flavor talents, split into likes and aversions that affect mood only. There are no stat, combat, or production penalties and no negative talents that clear with leveling.
+- **Preferences.** A few permanent, mood-only likes and aversions, drawn at the native random count of 0–3 per recruit. They carry no stat, combat, or production penalty; only the loadout-tied gear rows are retired, so no permanent mood is bound to an issued weapon or armor.
 
 Quality sets the tier of the class talent:
 
@@ -111,5 +111,9 @@ It does not affect caps or starting proficiency.
 ## Tribesman cap growth
 
 The number of tribesmen a player may hold grows gradually with awareness strength instead of jumping at a few milestones.
-The personal cap begins at a native base of 3 and gains a 15-step ladder from the mask Connection Enhancement module, one step every four awareness levels, each step adding 3, ending at 48.
+The personal cap begins at a native base of 3 and gains a 15-step ladder from the mask Connection Enhancement module, one step every four awareness levels from 4 to 60.
+The ladder is shared between game modes, but the per-tier step is mode-aware: Survival adds 3 per tier for a personal cap of 48, and Tribe Mode (Management) adds 6 per tier for a personal cap of 93.
+One rebuilt mask node, `BP_Mask_XiuFu01_1012`, stores the keys and gates and serves both modes; the per-mode magnitudes live in each mode's coefficient manager, `BP_GameXiShu_GuanLiQi` for Survival and `BP_GameXiShu_GuanLiQi_Management` for Tribe Mode, and all of it ships in the one pak.
+The effective personal cap is min-bounded by the world's tribe-wide cap, `GongHuiMaxZhaoMuCount` plus guild-level `TribeMemCount`, so the 48 and 93 targets hold only where that cap allows; a restricted or dedicated group-1 world sets `GongHuiMaxZhaoMuCount` to 40 and bounds the total lower.
+Action, Creative, and PVP are not covered, and there the keys are shadowed by their own managers so those modes fall back to 1 per tier.
 This keeps new slots arriving throughout the game, so there is a continuing reason to recruit later in the game since you cannot fill every slot early.

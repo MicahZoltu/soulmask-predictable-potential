@@ -14,7 +14,7 @@ Each document marks its claims as in-game verified, asset-level verified, inferr
 | [`talents.md`](talents.md) | The natural-gift table, selection pools, and assignment pipeline. |
 | [`weapon-mastery.md`](weapon-mastery.md) | Mastery abilities, thresholds, and their DataTables. |
 | [`tribes-and-regions.md`](tribes-and-regions.md) | Factions, tribe identities, biomes, and region tiers. |
-| [`roster-limits.md`](roster-limits.md) | Tribesman count limits and the mask-node ramp mechanism. |
+| [`roster-limits.md`](roster-limits.md) | Tribesman count limits and the per-mode mask-node ramp mechanism. |
 | [`tech-tree.md`](tech-tree.md) | The mask technology tree's Blueprint nodes and gates. |
 | [`training-ground-and-transfer.md`](training-ground-and-transfer.md) | What the Training Ground and Mysterious Stone Table move. |
 | [`console-commands.md`](console-commands.md) | The console and admin command surface for inspecting and forcing state. |

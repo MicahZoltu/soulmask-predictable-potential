@@ -435,9 +435,8 @@ objdump -d --start-address=0x41c4af0 --stop-address=0x41c4ba0 "$BIN"   # int-ran
 objdump -d --start-address=0x41c4f30 --stop-address=0x41c4ff5 "$BIN"   # recompute
 objdump -d --start-address=0x41c7cb0 --stop-address=0x41c7e6a "$BIN"   # setter: +0x4/+0xc/+0x14/+0x8
 objdump -d --start-address=0x4603f20 --stop-address=0x4603f50 "$BIN"   # mentor: +0xc += 1
-bun /tmp/verify-v4/scan_calls.mjs 0x41c7cb0
-bun /tmp/verify-v4/scan_calls.mjs 0x41b7730
-bun /tmp/verify-v4/scan_calls.mjs 0x41c4f30
+# call sites of a target function are found by scanning the disassembly for its address, e.g.
+objdump -d "$BIN" | grep -E 'call.*41c7cb0|call.*41b7730|call.*41c4f30'
 ```
 
 ## 6. Vtable and FName-literal surface for symbol-less classes

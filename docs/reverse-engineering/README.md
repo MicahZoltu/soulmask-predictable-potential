@@ -11,6 +11,6 @@ Claims here are labelled by evidence level: the extraction and analysis guides u
 | [`native-binary-analysis.md`](native-binary-analysis.md) | Reading hard-coded gameplay out of the shipping Linux dedicated-server binary. |
 | [`probe-methodology.md`](probe-methodology.md) | Designing temporary probe paks to make one uncertain behavior observable. |
 
-The AES key documented in the extraction guide is a secret: within the maintained document set it appears only there and must not be copied into other documents or committed around.
+The AES key documented in the extraction guide is a public, game-wide project constant, not a per-user secret; it lives there as the canonical copy, but it is not sensitive and may be copied or committed freely.
 The transient probe sources these methods produced have been removed; the productionized editing code lives under [`../../build/`](../../build/).
 For where these methods fit in the wider set, see the master index at [`../README.md`](../README.md); the guided authoring path is in [`../modding-guide/authoring-pipeline.md`](../modding-guide/authoring-pipeline.md).

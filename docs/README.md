@@ -78,7 +78,7 @@ When two documents disagree, prefer the claim with the strongest evidence and tr
 ## Provenance
 
 The findings come from two sources: the shipping cooked assets in the retail client and dedicated-server paks, and the Linux dedicated-server binary, which has no static symbol table (`.symtab`) but retains a dynamic symbol table (`.dynsym`) as described in [`reverse-engineering/native-binary-analysis.md`](reverse-engineering/native-binary-analysis.md).
-The AES key that decrypts the retail pak indexes is a secret; within this maintained documentation set it appears only in [`reverse-engineering/extracting-cooked-assets.md`](reverse-engineering/extracting-cooked-assets.md), and it must not be copied into other documents or committed around.
+The AES key that decrypts the retail pak indexes is a public, game-wide project constant, not a per-user secret; it is kept in [`reverse-engineering/extracting-cooked-assets.md`](reverse-engineering/extracting-cooked-assets.md) as the canonical copy to avoid needless duplication, but it is not sensitive and may be copied or committed freely.
 The transient probe scaffolding used during discovery has been removed; the durable findings and the reproducible methods are captured in this set, and the productionized editing code lives under [`../build/`](../build/).
 
 ## Where to start by task

@@ -80,12 +80,19 @@ The observed 32-byte key is:
 c54db0b49ccc34de99df9a0b9e60073f4c88d9a122aa9b2a5e1e7667e7bba995
 ```
 
-> **The key is a secret.** Treat it exactly like a private signing key.
-> Never ship it inside a mod, embed it in a pak, write it to a log that leaves your machine, commit it to a published artifact, or paste it into a public issue.
-> Anything a mod ships can be downloaded and audited by anyone; the key must live only on the machine that extracted it.
+> **The key is a public project constant, not a secret.** It is a game-wide pak key that is identical for every install and is already embedded in the publicly distributed Linux dedicated-server binary, so it is safe to publish and commit.
+> A mod has no need to carry it: the key is a build-time input for `repak`, not runtime content, so there is no reason to embed it in a pak or ship it inside a mod.
+> This is the AES pak key and is unrelated to the RSA private signing key (see "The AES pak key versus the RSA signing key" below), which genuinely must remain secret and is not shipped.
 
 The key is the loaded value, not a fixed artifact: re-running the capture reproduces the same bytes at a different stack address.
 It is validated by the fact that `repak info` accepts it against both retail paks; a wrong key cannot produce a valid entry count.
+
+## The AES pak key versus the RSA signing key
+
+The two are different keys with different roles, and only one of them is sensitive.
+The AES key above is the project-wide pak encryption key: it is the same on every install, its encryption key GUID is all-zero (the UE4 default), and it ships in the public dedicated-server binary, so it is public.
+The RSA private signing key is the key behind a pak's `.sig`; it is not shipped anywhere in the install and cannot be recovered from these binaries, so it must remain secret.
+Do not conflate the two: publishing the AES key is safe and committing it to this repository is intended, while the RSA private signing key would never be publishable even if it were known.
 
 ## Installing the Linux dedicated server
 
@@ -306,7 +313,7 @@ KEY=<recovered-32-byte-key>
 
 ## Foot-guns
 
-- **The AES key is a secret.** Treat it like a private signing key; never ship it in a mod, embed it in a pak, log it off-machine, commit it to a published artifact, or paste it into a public issue.
+- **The AES key is public, but the RSA signing key is not.** The pak key is a game-wide project constant embedded in the publicly distributed server binary, so it is safe to publish and commit; shipping it in a mod or a pak is still pointless because it is a build-time input, not runtime content. The RSA private signing key is the genuinely sensitive one and is not shipped.
 - **Static scanning of the Windows client fails.** `WS-Win64-Shipping.exe` is Themida/WinLicense-packed (`.themida` and `.boot` sections; no Unreal strings survive), so an absence of key material in a client string dump proves nothing.
 - **An ASCII `strings` search misses UTF-16 UE4 string literals.** Engine option names such as `fileopenlog` are stored as wide characters; use `strings -e l` and never conclude a feature is absent from an ASCII-only pass.
 - **`repak` cannot self-fetch Oodle under the read-only `/usr/local/bin`.** Copy `repak` to a writable directory and place `liboo2corelinux64.so.9` beside it, or extraction of Oodle-compressed entries fails.

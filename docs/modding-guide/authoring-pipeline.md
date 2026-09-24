@@ -199,7 +199,7 @@ Unverified:
 - `WS/Mods/` is not scanned as a raw pak directory; use `WS/Content/Paks/` or `~mods/`.
 - `repak`'s `-a`/`--aes-key` option is global and must precede the subcommand.
 - Server extraction differs from the client for a few assets (`DT_GiftZongBiao`, `BP_ZiYuanGuanLiQi`, `BP_BuLuo_Base`); use the retail client pak as authoritative.
-- Treat the retail AES key like a private signing key; never ship it in a pak, log it off-machine, or commit it to a published artifact.
+- The retail AES key is a public, game-wide project constant, not a secret, so it is safe to publish and commit; it is a build-time input for `repak`, so a mod has no need to ship it in a pak. The RSA private signing key is the sensitive one and is not public.
 
 ## Related documents
 

@@ -23,7 +23,7 @@ const config = {
 	},
 	scratchDir,
 	pakRootDir: `${scratchDir}/pakroot`,
-	outputPakPath: `${buildRoot}/dist/ConsistentProgression_P.pak`,
+	outputPakPath: `${buildRoot}/dist/PredictablePotential_P.pak`,
 	pakMountPoint: PAK_MOUNT_POINT,
 	pakVersion: PAK_VERSION,
 }

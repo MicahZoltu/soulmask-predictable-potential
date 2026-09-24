@@ -1,11 +1,11 @@
-# Consistent Progression — mod status
+# Predictable Potential — mod status
 
 ## Overview
 
-Consistent Progression is a Soulmask (Unreal Engine 4.27, including the Shifting Sands DLC) mod that makes recruit proficiency caps, starting skill, talent tiers, mastery unlocks, and roster growth deterministic, keeping quality as the one meaningful recruitment filter.
+Predictable Potential is a Soulmask (Unreal Engine 4.27, including the Shifting Sands DLC) mod that makes recruit proficiency caps, starting skill, talent tiers, mastery unlocks, and roster growth deterministic, keeping quality as the one meaningful recruitment filter.
 The design is specified in [`../DESIGN.md`](../DESIGN.md).
 The game data it edits is documented under [`game-reference/`](game-reference/), for example [`game-reference/proficiencies-and-caps.md`](game-reference/proficiencies-and-caps.md), [`game-reference/starting-proficiency.md`](game-reference/starting-proficiency.md), [`game-reference/weapon-mastery.md`](game-reference/weapon-mastery.md), [`game-reference/talents.md`](game-reference/talents.md), [`game-reference/quality-and-rarity.md`](game-reference/quality-and-rarity.md), and [`game-reference/recruitment-and-spawns.md`](game-reference/recruitment-and-spawns.md).
-It ships as one unsigned pak, `ConsistentProgression_P.pak`, built by the pipeline under [`../build/`](../build/) entirely from the retail cooked assets, with mount point `../../../` and an unencrypted index.
+It ships as one unsigned pak, `PredictablePotential_P.pak`, built by the pipeline under [`../build/`](../build/) entirely from the retail cooked assets, with mount point `../../../` and an unencrypted index.
 The pak is produced by [`build.sh`](../build/build.sh), and its content is verified asset by asset.
 The container hash is not byte-reproducible, because `repak` does not emit a deterministic container even when the staged content is fixed, so a specific container hash is not a stable identity and is not pinned here.
 The build and pak workflow is described in [`../build/README.md`](../build/README.md) and the modding guide under `modding-guide/`.
@@ -65,7 +65,7 @@ Run the build from the repository root or the build directory:
 - `SOULMASK_CLIENT_CONTENT`: the client tree; the localization edit reads `Localization/Game/en/Game.locres` from it.
 - `DOTNET_ROOT`, `REPAK_PATH`, `UASSET_TO_JSON_DLL`, `ROUNDTRIP_DLL`.
 
-The build writes its scratch under `build/.work/`, stages the pak root, and emits `build/dist/ConsistentProgression_P.pak`.
+The build writes its scratch under `build/.work/`, stages the pak root, and emits `build/dist/PredictablePotential_P.pak`.
 
 Run the in-memory test suite:
 

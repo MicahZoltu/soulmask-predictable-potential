@@ -1,4 +1,4 @@
-# Soulmask — Consistent Progression Mod
+# Soulmask — Predictable Potential Mod
 
 **Target game:** Soulmask (CampFire Studio / Qooland Games), Unreal Engine 4.27, including the Shifting Sands DLC.
 

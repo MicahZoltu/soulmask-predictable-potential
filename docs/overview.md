@@ -13,7 +13,7 @@ The set is split into three folders by purpose, plus a status document for the d
 | `game-reference/` | What is known: the shipped systems, assets, fields, and values. | `game-reference/game-and-assets.md` |
 | `modding-guide/` | How to build: extract, edit, pack, load, tool, distribute. | `modding-guide/authoring-pipeline.md` |
 | `reverse-engineering/` | How it was discovered: decrypting paks and reading the native binary. | `reverse-engineering/extracting-cooked-assets.md` |
-| `mod-status.md` | The state of the delivered `ConsistentProgression_P.pak`. | `mod-status.md` |
+| `mod-status.md` | The state of the delivered `PredictablePotential_P.pak`. | `mod-status.md` |
 
 - **`game-reference/` is the authority on what the game contains.**
   It is the folder to read when you want to understand a system before changing it.

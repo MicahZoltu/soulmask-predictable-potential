@@ -1,6 +1,6 @@
-# Consistent Progression
+# Predictable Potential
 
-Consistent Progression is a Soulmask mod that makes tribesman advancement predictable instead of a matter of capture luck.
+Predictable Potential is a Soulmask mod that makes tribesman advancement predictable instead of a matter of capture luck.
 
 Every recruit of a class gets the same proficiency caps and a level-based starting skill, talents are assembled from the same readable slots, weapon masteries unlock reliably, and your roster grows gradually as your awareness rises.
 

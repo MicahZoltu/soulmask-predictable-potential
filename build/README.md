@@ -1,6 +1,6 @@
-# Consistent Progression build pipeline
+# Predictable Potential build pipeline
 
-This directory builds the combined, unsigned `ConsistentProgression_P.pak` (UE V11, mount point `../../../`) for local `-fileopenlog` play.
+This directory builds the combined, unsigned `PredictablePotential_P.pak` (UE V11, mount point `../../../`) for local `-fileopenlog` play.
 It applies the core progression edits, the talent edits, the ramp edits, and the localization override to the retail cooked assets, and packs one pak.
 
 ## Talent edits
@@ -82,7 +82,7 @@ dotnet build -c Release tools/uasset-wrapper/roundtrip/roundtrip.csproj
 - `SOULMASK_CLIENT_CONTENT`: the client tree; the localization edit reads `Localization/Game/en/Game.locres` from it (byte-identical to the retail client pak entry).
 - `DOTNET_ROOT`, `REPAK_PATH`, `UASSET_TO_JSON_DLL`, `ROUNDTRIP_DLL`.
 
-The build writes its scratch under `build/.work/`, stages the pak root, and emits `build/dist/ConsistentProgression_P.pak`.
+The build writes its scratch under `build/.work/`, stages the pak root, and emits `build/dist/PredictablePotential_P.pak`.
 It prints the pak info, the entry listing, and the SHA-256.
 
 ## Tests

@@ -1,7 +1,7 @@
 # Roster Limits and the Recruit-Cap Ramp
 
 This is the authoritative reference for every Soulmask setting that limits or raises a player's tribesman count, the traced composition of the effective personal cap, and the mask-node mechanism that grows it.
-It documents the shipped game and the Consistent Progression mod separately: the shipped mask node `BP_Mask_XiuFu01_1012` carries exactly three keyed tiers, and the 15-tier `ZhaoMuRamp01`–`ZhaoMuRamp15` ladder is the mod's own design, delivered in one pak with a per-mode increment (Survival `+3`, Tribe Mode `+6`), specified in [`../../DESIGN.md`](../../DESIGN.md) and recorded in [`../mod-status.md`](../mod-status.md).
+It documents the shipped game and the Predictable Potential mod separately: the shipped mask node `BP_Mask_XiuFu01_1012` carries exactly three keyed tiers, and the 15-tier `ZhaoMuRamp01`–`ZhaoMuRamp15` ladder is the mod's own design, delivered in one pak with a per-mode increment (Survival `+3`, Tribe Mode `+6`), specified in [`../../DESIGN.md`](../../DESIGN.md) and recorded in [`../mod-status.md`](../mod-status.md).
 Confidence tags used throughout: **in-game verified** (observed on a running server), **asset-level verified** (read from a cooked asset or disassembled from the shipping binary), **inferred** (derived from structure), and **unverified** (plausible but not confirmed).
 The plaintext settings file layout behind these keys is covered by [server-config.md](server-config.md); proficiency caps and the class and talent machinery that decide recruit quality are covered by [proficiencies-and-caps.md](proficiencies-and-caps.md).
 

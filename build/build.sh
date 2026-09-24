@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the combined ConsistentProgression_P.pak from the extracted retail content trees.
+# Builds the combined PredictablePotential_P.pak from the extracted retail content trees.
 # Override any of these variables to point at another toolchain or asset tree.
 set -euo pipefail
 

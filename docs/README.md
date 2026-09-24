@@ -1,6 +1,6 @@
 # Soulmask Modding Documentation
 
-This repository documents how to mod Soulmask, a CampFire Studio game built on Unreal Engine 4.27, and it records the specific Consistent Progression mod the documentation was gathered for.
+This repository documents how to mod Soulmask, a CampFire Studio game built on Unreal Engine 4.27, and it records the specific Predictable Potential mod the documentation was gathered for.
 It is the durable result of an extensive reverse-engineering effort, written so a future mod maker can build on the findings instead of repeating the work.
 
 ## How to read this
@@ -70,7 +70,7 @@ When two documents disagree, prefer the claim with the strongest evidence and tr
 
 | Path | Description |
 | --- | --- |
-| [`../DESIGN.md`](../DESIGN.md) | The design of the Consistent Progression mod: what it changes and why. |
+| [`../DESIGN.md`](../DESIGN.md) | The design of the Predictable Potential mod: what it changes and why. |
 | [`../AGENTS.md`](../AGENTS.md) | The repository's conventions for code, testing, dependencies, and documentation. |
 | [`../build/`](../build/) | The mod build pipeline that produces the unsigned `_P.pak`, with its own `README.md` and dependency ledger. |
 

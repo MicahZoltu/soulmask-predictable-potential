@@ -1,0 +1,2 @@
+# The vendored C# wrapper is not governed by the repository style; a root marker here stops the search so the repository's [*] tab rule does not apply to it.
+root = true

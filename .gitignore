@@ -1,3 +1,7 @@
 artifacts/
 build/.work/
 build/dist/
+
+# .NET wrapper build output, created by an in-place wrapper rebuild
+build/tools/**/bin/
+build/tools/**/obj/

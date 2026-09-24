@@ -153,7 +153,7 @@ This is why the capability matrix distinguishes Linux-authorable data edits from
 The single most valuable unobserved step is an in-game read proving that the game serves an overridden row from the loaded `_P.pak`.
 The pak mounting and `_P` priority are proven from server logs, but a live read of the overridden value has not been observed.
 `mod-status.md` tracks this by separating three verification levels: **in-game verified** (the cap default-object constants and the Survival roster ramp), **asset-level verified** (re-parse and byte-identical round-trip only), and **pending in-game verification** (the Tribe Mode roster ramp, mastery draws, added class and pool rows, the frozen class/base boundary, the DLC caps, and the localization override priority).
-`final-mod-verification-checklist.md` is the concrete acceptance oracle for that read, and `game-reference/console-commands.md` describes the `gm` commands used to stand up a test recruit.
+`game-reference/console-commands.md` describes the `gm` commands used to stand up a test recruit for that read.
 
 ## Start here by task
 

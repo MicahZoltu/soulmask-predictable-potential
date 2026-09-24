@@ -190,7 +190,6 @@ The build shapes the class rows to the `DESIGN.md` class sets through the same s
 
 The terminal `50+` plateau is 76 for non-class and 112 for class.
 A lower-quality cap clamps the start with `min(value, cap)`, so a start above a lower cap lands exactly on that cap.
-The acceptance checks for the curve are in `../../final-mod-verification-checklist.md` "Starting proficiency by level and rank".
 The built assets are asset-level verified; a live recruit read of the curve is unverified.
 
 ## 9. Exact fields to edit and their locations

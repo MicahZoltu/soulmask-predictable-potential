@@ -72,7 +72,6 @@ When two documents disagree, prefer the claim with the strongest evidence and tr
 | --- | --- |
 | [`../DESIGN.md`](../DESIGN.md) | The design of the Consistent Progression mod: what it changes and why. |
 | [`../AGENTS.md`](../AGENTS.md) | The repository's conventions for code, testing, dependencies, and documentation. |
-| [`../final-mod-verification-checklist.md`](../final-mod-verification-checklist.md) | The pass/fail in-game checks for the delivered mod, kept temporarily until all items are confirmed. |
 | [`../build/`](../build/) | The mod build pipeline that produces the unsigned `_P.pak`, with its own `README.md` and dependency ledger. |
 
 ## Provenance
@@ -87,5 +86,5 @@ The transient probe scaffolding used during discovery has been removed; the dura
 - Make a first data-only mod: follow [`modding-guide/authoring-pipeline.md`](modding-guide/authoring-pipeline.md) and set up the tools from [`modding-guide/tooling.md`](modding-guide/tooling.md).
 - Change a specific game value: find the system in `game-reference/`, then apply the edit with [`modding-guide/data-editing.md`](modding-guide/data-editing.md).
 - Get assets out of the game: start with [`reverse-engineering/extracting-cooked-assets.md`](reverse-engineering/extracting-cooked-assets.md).
-- Confirm a change worked: use [`modding-guide/testing.md`](modding-guide/testing.md) and the [`final-mod-verification-checklist.md`](../final-mod-verification-checklist.md).
+- Confirm a change worked: use [`modding-guide/testing.md`](modding-guide/testing.md).
 - Distribute what you built: read [`modding-guide/distribution-and-anticheat.md`](modding-guide/distribution-and-anticheat.md).

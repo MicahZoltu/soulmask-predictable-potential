@@ -5,7 +5,6 @@ It covers the two testing channels, how to reach a controllable recruit quickly,
 The console command surface that reaches a recruitable recruit is owned by [`../game-reference/console-commands.md`](../game-reference/console-commands.md); this guide references it instead of repeating its tables.
 The technique of using probes to answer an unknown research question belongs to [`../reverse-engineering/probe-methodology.md`](../reverse-engineering/probe-methodology.md); this guide confirms a change you already understand.
 The pak mechanics and the mount procedure are in [`packaging-and-loading.md`](packaging-and-loading.md), and the asset edit workflow is in [`authoring-pipeline.md`](authoring-pipeline.md).
-For the full pass/fail script against the shipped design, work through [`../../final-mod-verification-checklist.md`](../../final-mod-verification-checklist.md).
 
 ## The testing goal
 
@@ -64,7 +63,8 @@ Client acceptance of `-fileopenlog` is community-reported, because the client ex
 
 Run one check at a time against a freshly generated subject.
 For every check, record the recruit's level and quality (the potential-icon border colour) before opening any panel, and name the class explicitly, because every cap and class-talent check is per class.
-The concrete expected value and failure signature for each system are the acceptance checklist at [`../../final-mod-verification-checklist.md`](../../final-mod-verification-checklist.md); [`../mod-status.md`](../mod-status.md) is authoritative for the current build status and open items.
+[`../mod-status.md`](../mod-status.md) is authoritative for the current build status, the verification level of each claim, and the open items.
+The expected delivered values per system are tabulated in [`../mod-status.md`](../mod-status.md) 'What the delivered pak changes'.
 
 ### Proficiency caps
 
@@ -180,4 +180,3 @@ Only an in-game observation on a fresh subject moves a runtime claim from unveri
 - [`packaging-and-loading.md`](packaging-and-loading.md) — pak format, mount layout, the signature gate, and load precedence.
 - [`authoring-pipeline.md`](authoring-pipeline.md) — extracting, editing, and repacking cooked assets.
 - [`../reverse-engineering/probe-methodology.md`](../reverse-engineering/probe-methodology.md) — using probes to answer an unknown research question.
-- [`../../final-mod-verification-checklist.md`](../../final-mod-verification-checklist.md) — the full pass/fail script for the shipped design.

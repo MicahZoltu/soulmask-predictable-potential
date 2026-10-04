@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Soulmask Farm Plot Calculator</title>
+	<style>
+		:root {
+			color-scheme: light dark;
+			--font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+			--bg: #f4f1e8;
+			--bg-accent: #e6efe2;
+			--surface: #fffefb;
+			--surface-2: #f6f3ea;
+			--text: #1d2a1f;
+			--muted: #5b6a58;
+			--border: #ddd6c6;
+			--border-strong: #c8bfa9;
+			--accent: #2f6f3e;
+			--accent-strong: #1f5230;
+			--accent-soft: #e2efe0;
+			--accent-contrast: #ffffff;
+			--danger: #a3422d;
+			--ring: rgba(31, 82, 48, 0.85);
+
+			--radius-sm: 0.5rem;
+			--radius: 0.85rem;
+			--radius-lg: 1.25rem;
+
+			--space-1: 0.25rem;
+			--space-2: 0.5rem;
+			--space-3: 0.75rem;
+			--space-4: 1rem;
+			--space-5: 1.5rem;
+
+			--shadow-sm: 0 1px 2px rgba(29, 42, 31, 0.06), 0 1px 3px rgba(29, 42, 31, 0.05);
+		}
+
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--bg: #0f1510;
+				--bg-accent: #17231a;
+				--surface: #19221a;
+				--surface-2: #202b21;
+				--text: #e9f0e7;
+				--muted: #9bae9b;
+				--border: #2c3a2e;
+				--border-strong: #3d4d3f;
+				--accent: #6fc47f;
+				--accent-strong: #8fdd9e;
+				--accent-soft: #1f3222;
+				--accent-contrast: #0c120c;
+				--danger: #e08b76;
+				--ring: rgba(111, 196, 127, 0.5);
+				--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.35);
+			}
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		html {
+			-webkit-text-size-adjust: 100%;
+		}
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			min-height: 100dvh;
+			font-family: var(--font-sans);
+			font-size: 1rem;
+			line-height: 1.55;
+			color: var(--text);
+			background: var(--bg);
+		}
+
+		body::before {
+			content: "";
+			position: fixed;
+			inset: 0;
+			z-index: -1;
+			pointer-events: none;
+			background:
+				radial-gradient(60rem 40rem at 100% -15%, var(--bg-accent), transparent 65%),
+				radial-gradient(45rem 35rem at -10% 110%, var(--bg-accent), transparent 60%);
+		}
+
+		h1,
+		h2 {
+			line-height: 1.15;
+		}
+
+		.app-shell {
+			min-height: 100vh;
+			min-height: 100dvh;
+			display: grid;
+			grid-template-rows: auto 1fr auto;
+			gap: var(--space-5);
+			padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.75rem);
+		}
+
+		.app-header {
+			display: flex;
+			align-items: center;
+			gap: var(--space-4);
+		}
+
+		.brand-mark {
+			display: grid;
+			place-items: center;
+			flex: none;
+			width: 3rem;
+			height: 3rem;
+			border-radius: var(--radius);
+			color: var(--accent-contrast);
+			background: linear-gradient(150deg, var(--accent), var(--accent-strong));
+			box-shadow: var(--shadow-sm);
+		}
+
+		.brand-text h1 {
+			margin: 0;
+			font-size: clamp(1.35rem, 1rem + 1.6vw, 2.05rem);
+			letter-spacing: -0.015em;
+		}
+
+		.intro {
+			margin: var(--space-1) 0 0;
+			max-width: 72ch;
+			color: var(--muted);
+			font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+		}
+
+		.workspace {
+			display: grid;
+			gap: clamp(1rem, 1.6vw, 1.5rem);
+			align-content: start;
+		}
+
+		.panel {
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius-lg);
+			box-shadow: var(--shadow-sm);
+			padding: clamp(1rem, 1.6vw, 1.5rem);
+		}
+
+		.panel-header {
+			display: flex;
+			align-items: baseline;
+			justify-content: space-between;
+			gap: var(--space-4);
+			margin-bottom: var(--space-4);
+		}
+
+		.panel-header h2 {
+			margin: 0;
+			font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem);
+		}
+
+		.count-badge {
+			flex: none;
+			padding: 0.15rem 0.6rem;
+			border-radius: 999px;
+			background: var(--accent-soft);
+			color: var(--accent);
+			font-size: 0.75rem;
+			font-weight: 700;
+			letter-spacing: 0.02em;
+			white-space: nowrap;
+		}
+
+		.search-field {
+			display: grid;
+			gap: var(--space-1);
+			margin-bottom: var(--space-4);
+			max-width: 30rem;
+		}
+
+		.search-field > span,
+		.field > span {
+			font-size: 0.72rem;
+			font-weight: 700;
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			color: var(--muted);
+		}
+
+		input[type="search"],
+		input[type="number"],
+		select {
+			font: inherit;
+			color: inherit;
+			padding: 0.5rem 0.7rem;
+			border: 1px solid var(--border-strong);
+			border-radius: var(--radius-sm);
+			background: var(--surface-2);
+		}
+
+		input[type="search"] {
+			width: 100%;
+		}
+
+		input[type="number"] {
+			width: 6.5rem;
+			font-variant-numeric: tabular-nums;
+		}
+
+		select {
+			width: 100%;
+		}
+
+		.dish-catalog {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(min(7rem, 100%), 1fr));
+			grid-auto-rows: 1fr;
+			gap: var(--space-2);
+		}
+
+		.dish-catalog > li {
+			display: flex;
+		}
+
+		.dish-button {
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font: inherit;
+			cursor: pointer;
+			text-align: center;
+			overflow-wrap: anywhere;
+			padding: 0.5rem 0.8rem;
+			border: 1px solid var(--border);
+			border-radius: var(--radius-sm);
+			background: var(--surface-2);
+			color: inherit;
+			transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+		}
+
+		.dish-button:hover {
+			border-color: var(--accent);
+			background: var(--accent-soft);
+		}
+
+		.dish-button[aria-pressed="true"] {
+			border-color: var(--accent);
+			background: var(--accent);
+			color: var(--accent-contrast);
+			font-weight: 600;
+		}
+
+		.detail-grid {
+			display: grid;
+			gap: clamp(1rem, 1.6vw, 1.5rem);
+			align-items: start;
+		}
+
+		@media (min-width: 62rem) {
+			.detail-grid {
+				grid-template-columns: minmax(19rem, 1fr) minmax(23rem, 1.35fr);
+			}
+		}
+
+		.selected-dishes {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+			gap: var(--space-3);
+		}
+
+		.selected-row {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			gap: var(--space-2) var(--space-3);
+			align-items: center;
+			padding: var(--space-3) var(--space-4);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			background: var(--surface-2);
+		}
+
+		.selected-name {
+			font-weight: 600;
+		}
+
+		.selected-fields {
+			grid-column: 1 / -1;
+			display: flex;
+			flex-wrap: wrap;
+			align-items: end;
+			gap: var(--space-3) var(--space-4);
+		}
+
+		.field {
+			display: grid;
+			gap: var(--space-1);
+			min-width: 0;
+		}
+
+		.field-variant {
+			flex: 1 1 12rem;
+		}
+
+		.remove-button {
+			font: inherit;
+			cursor: pointer;
+			padding: 0.3rem 0.65rem;
+			border: 1px solid var(--border-strong);
+			border-radius: var(--radius-sm);
+			background: transparent;
+			color: var(--muted);
+		}
+
+		.remove-button:hover {
+			border-color: var(--danger);
+			color: var(--danger);
+		}
+
+		.plot-results {
+			display: grid;
+			gap: var(--space-3);
+		}
+
+		.results-list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			gap: var(--space-2);
+		}
+
+		.crop-row {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			grid-template-areas:
+				"name value"
+				"bar bar";
+			gap: var(--space-1) var(--space-3);
+			padding-bottom: var(--space-2);
+			border-bottom: 1px solid var(--border);
+		}
+
+		.crop-name {
+			grid-area: name;
+			font-weight: 500;
+		}
+
+		.crop-plots {
+			grid-area: value;
+			font-variant-numeric: tabular-nums;
+			font-weight: 700;
+		}
+
+		.crop-bar {
+			grid-area: bar;
+			display: block;
+			height: 0.5rem;
+			border-radius: 999px;
+			background: var(--surface-2);
+			border: 1px solid var(--border);
+			overflow: hidden;
+		}
+
+		.crop-bar-fill {
+			display: block;
+			height: 100%;
+			width: var(--bar-fill, 0%);
+			border-radius: inherit;
+			background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+		}
+
+		.grand-total {
+			margin-top: var(--space-2);
+			padding: var(--space-3) var(--space-4);
+			display: flex;
+			flex-wrap: wrap;
+			min-width: 0;
+			align-items: baseline;
+			justify-content: space-between;
+			gap: var(--space-3);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			background: linear-gradient(135deg, var(--accent-soft), transparent 75%);
+		}
+
+		.grand-total-label {
+			font-size: 0.8rem;
+			font-weight: 700;
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			color: var(--muted);
+		}
+
+		.grand-total-value {
+			font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.3rem);
+			font-weight: 800;
+			font-variant-numeric: tabular-nums;
+			line-height: 1;
+			color: var(--accent);
+		}
+
+		.dish-breakdown {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
+			gap: var(--space-3);
+			align-items: start;
+		}
+
+		.breakdown-item {
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			background: var(--surface-2);
+			padding: var(--space-2) var(--space-3);
+		}
+
+		.breakdown-item[open] {
+			background: var(--surface);
+		}
+
+		.breakdown-item summary {
+			cursor: pointer;
+			font-weight: 600;
+		}
+
+		.breakdown-list {
+			list-style: none;
+			margin: var(--space-2) 0 0;
+			padding: 0;
+			display: grid;
+			gap: var(--space-1);
+		}
+
+		.breakdown-list li {
+			display: flex;
+			justify-content: space-between;
+			gap: var(--space-3);
+			font-size: 0.9rem;
+			padding: var(--space-1) 0;
+			border-top: 1px solid var(--border);
+		}
+
+		.empty-state {
+			margin: 0;
+			color: var(--muted);
+			font-style: italic;
+		}
+
+		:focus-visible {
+			outline: 3px solid var(--ring);
+			outline-offset: 2px;
+		}
+
+		.app-footer {
+			border-top: 1px solid var(--border);
+			padding-top: var(--space-4);
+			color: var(--muted);
+			font-size: 0.82rem;
+		}
+
+		.app-footer p {
+			margin: 0;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			.dish-button {
+				transition: none;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="app-shell">
+		<header class="app-header">
+			<span class="brand-mark" aria-hidden="true">
+				<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M12 21V11"></path>
+					<path d="M12 11c0-4 3-7 7-7 0 4-3 7-7 7Z"></path>
+					<path d="M12 14C9 14 6 11.5 6 8c3 0 6 2.5 6 6Z"></path>
+				</svg>
+			</span>
+			<div class="brand-text">
+				<h1>Soulmask Farm Plot Calculator</h1>
+				<p class="intro">Pick the dishes you cook and set how many you want per hour. The tool reports the large farm plots of each crop needed to sustain that.</p>
+			</div>
+		</header>
+
+		<main class="workspace">
+			<section class="panel catalog-panel" aria-labelledby="catalog-heading">
+				<div class="panel-header">
+					<h2 id="catalog-heading">1 &middot; Choose dishes</h2>
+					<span id="catalog-count" class="count-badge"></span>
+				</div>
+				<label class="search-field" for="dish-search">
+					<span>Search dishes</span>
+					<input id="dish-search" type="search" autocomplete="off" placeholder="Filter by name">
+				</label>
+				<ul id="dish-catalog" class="dish-catalog" aria-label="Available dishes"></ul>
+				<p id="catalog-empty" class="empty-state" hidden>No dishes match your search.</p>
+			</section>
+
+			<div class="detail-grid">
+				<section class="panel selected-panel" aria-labelledby="selected-heading">
+					<div class="panel-header">
+						<h2 id="selected-heading">2 &middot; Set quantities</h2>
+					</div>
+					<p id="selected-empty" class="empty-state">No dishes selected yet. Choose from the catalog above.</p>
+					<ul id="selected-dishes" class="selected-dishes"></ul>
+				</section>
+
+				<section class="panel results-panel" aria-labelledby="results-heading">
+					<div class="panel-header">
+						<h2 id="results-heading">3 &middot; Plot demand</h2>
+					</div>
+					<div id="plot-results" class="plot-results"></div>
+				</section>
+			</div>
+
+			<section class="panel breakdown-panel" aria-labelledby="breakdown-heading">
+				<div class="panel-header">
+					<h2 id="breakdown-heading">Per-dish breakdown</h2>
+				</div>
+				<div id="dish-breakdown" class="dish-breakdown"></div>
+			</section>
+		</main>
+
+		<footer class="app-footer">
+			<p>Rates are items per minute per large farm plot, net of seed self-replenishment. Fruit-tree regrow time is an estimate.</p>
+		</footer>
+	</div>
+
+	<script src="data.js"></script>
+	<script src="calculator.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
